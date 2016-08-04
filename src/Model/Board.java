@@ -17,24 +17,39 @@ public class Board {
 //		}
 //	}
 	
-	public void movePiece(String startSpace, String endSpace){
-		Piece movingPiece = null;
-		for(int i = 0; i < squares.length; i++){
+	public boolean attemptMove(String startSpace, String endSpace){
+		boolean successfulMove = false;
+		for(int i = 0; i < squares.length && !successfulMove; i++){
 			if(squares[i].getFileRank().equals(startSpace)){
-				movingPiece = squares[i].getPiece();
-				break;
+				if(squares[i].getPiece().checkMove(startSpace, endSpace, squares)){
+//					Move a Piece
+//					Swap Turns
+					squares[i] = movePiece(squares[i], endSpace);
+					successfulMove = true;					
+				}
 			}
 		}
-		if(movingPiece.checkMove(startSpace, endSpace, squares)){
-			squares = movingPiece.move(startSpace, endSpace, squares);
+		return successfulMove;
+	}
+	
+	private Square movePiece(Square startSquare, String endSpace){
+		for(int i = 0; i < squares.length; i++){
+			if(squares[i].getFileRank().equals(endSpace)){
+				Piece emptyPiece = new Piece('-', "NoColor");
+				squares[i].setPiece(startSquare.getPiece());
+				squares[i].setOccupied(true);
+				squares[i].getPiece().setHasMoved(true);
+				squares[i].getPiece().clearPossibleMoves();
+				startSquare.setPiece(emptyPiece);
+				startSquare.setOccupied(false);
+				
+			}
 		}
-		else{
-			System.out.println("ERROR: Couldn't move [" + movingPiece.getCharacterPiece() + "] from [" + startSpace + "] to [" + endSpace + "]");
-		}
+		return startSquare;
 	}
 	
 	public void populateSquares(){			
-		char startRank = '1';
+		char startRank = '8';
 		int arrayIndex = 0;
 		Piece initialPiece = new Piece('-', "NoColor");
 		for(int i = 0; i < boardSize/8; i++){
@@ -45,7 +60,7 @@ public class Board {
 				startFile++;				
 				arrayIndex++;
 			}
-			startRank++;
+			startRank--;
 		}
 	}
 	
@@ -55,7 +70,6 @@ public class Board {
 			for(int j = 0; j < boardSize/8; j++){
 //				Change this to pull out the pieces value
 				System.out.print(squares[arrayIndex].getPiece().getCharacterPiece() + "\t");
-//				System.out.print(squares[arrayIndex].getPieceChar() + "\t");
 //				System.out.print(squares[arrayIndex].getFileRank() + "\t");	
 				arrayIndex++;
 			}			
@@ -73,14 +87,5 @@ public class Board {
 	
 //	public void setPieces(Piece[] pieces){
 //		this.pieces = pieces;
-//	}
-	
-//	public static void main(String[] args) {
-//		Board board = new Board();
-//		board.populateSquares();
-//		board.drawBoard();
-//		for(int i = 0; i < 64; i++){
-//			System.out.println(board.squares[i].getFileRank());
-//		}
 //	}
 }

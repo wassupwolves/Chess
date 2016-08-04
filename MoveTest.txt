@@ -1,1 +1,27 @@
-Qlh1
+    Rla1
+    Nlb1
+    Blc1
+    Kld1
+    Qle1
+    Blf1
+    Nlg1
+    Rlh1
+    Rda8
+    Ndb8
+    Bdc8
+    Kdd8
+    Qde8
+    Bdf8
+    Ndg8
+    Rdh8
+
+e1 e4
+e4 e8
+e8 h8
+e8 f8
+f8 g8
+g8 h8
+h8 d8 
+d8 c8
+c8 b8
+b8 a8

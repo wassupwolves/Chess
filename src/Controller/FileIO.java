@@ -28,21 +28,7 @@ public class FileIO {
 	public File file;
 	private ArrayList<String> actions;
 	private Board board;
-	private int pieceCounter = 0;
-	
-//	public static void main(String[] args) {
-//		FileIO fileIO = new FileIO(args[0]);
-//		try {
-//			InputStream fileInput = new FileInputStream(fileIO.file);
-//			fileIO.readFile(fileInput);
-//		} catch (FileNotFoundException ex) {
-//			System.out.println(ex);
-//		}
-//		ArrayList<String> actions = fileIO.getActions();
-//		for(int i = 0; i < actions.size(); i++){
-//			System.out.println(actions.get(i));
-//		}		
-//	}
+//	private int pieceCounter = 0;
 	
 	private void assignSquarePieces(char pieceChar, char color, String fileRank){
 		Square[] squares = board.getSquares();
@@ -69,7 +55,9 @@ public class FileIO {
 			break;
 	
 		}
-		for(int i = 0; i < squares.length; i++){
+		
+		boolean keepRunning = true;
+		for(int i = 0; i < squares.length && keepRunning; i++){
 			if(squares[i].getFileRank().equals(fileRank)){
 				if(color == 'l'){					
 					piece.setColor("White");
@@ -85,7 +73,7 @@ public class FileIO {
 //				pieces[pieceCounter] = piece;
 //				pieceCounter++;
 //				board.setPieces(pieces);
-				break;
+				keepRunning = false;
 			}
 		}
 	}
@@ -140,9 +128,10 @@ public class FileIO {
 				p = Pattern.compile(moveRegex);
 				m = p.matcher(line);
 				if(m.matches() && regexMatch == false){
+//					board.drawBoard();
 					line = m.group(1);
-					actions.add(movePiece(line));
-					board.movePiece(line.substring(0, 2), line.substring(3, 5));
+//					actions.add(movePiece(line));
+					System.out.println(movePiece(line));
 					regexMatch = true;
 				}				
 			}
@@ -154,6 +143,7 @@ public class FileIO {
 		catch(IOException ex){
 			System.out.println(ex);
 		}
+//		board.drawBoard();
 	}
 	
 	private String placePiece(String line){
@@ -275,6 +265,10 @@ public class FileIO {
 		else{
 			movement += "Piece from " + startSpace + " moved to " + finalSpace;
 		}
+		if(!board.attemptMove(startSpace, finalSpace)){
+			movement = "ERROR: Couldn't move piece from " + startSpace + " to " + finalSpace;
+		}
+		board.drawBoard();
 		return movement;
 	}
 	

@@ -11,7 +11,7 @@ public class Square {
 		isOccupied = false;
 		this.fileRank = fileRank;
 //		pieceChar = piece.getCharacterPiece();
-		this.setPiece(piece);
+		this.piece = piece;
 	}
 	
 	public String getFileRank() {
