@@ -9,7 +9,6 @@ public class Pawn extends Piece{
 	}
 	
 	public ArrayList<String> getPossibleMoves(String startSpace, Square[] squares){
-		ArrayList<String> possibleMoves = new ArrayList<String>();
 		int boardIndex = -1;		
 		for(int i = 0; i < squares.length; i++){
 			if(squares[i].getFileRank().equals(startSpace)){

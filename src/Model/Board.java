@@ -4,6 +4,7 @@ public class Board {
 
 	private final int boardSize = 64;
 	private Square[] squares = new Square[boardSize];
+	private boolean pieceTaken = false;
 //	private Piece [] pieces = new Piece[32];
 	
 	public Board(){		
@@ -35,6 +36,7 @@ public class Board {
 	private Square movePiece(Square startSquare, String endSpace){
 		for(int i = 0; i < squares.length; i++){
 			if(squares[i].getFileRank().equals(endSpace)){
+				pieceTaken = squares[i].isOccupied();
 				Piece emptyPiece = new Piece('-', "NoColor");
 				squares[i].setPiece(startSquare.getPiece());
 				squares[i].setOccupied(true);
@@ -81,11 +83,7 @@ public class Board {
 		return squares;
 	}
 	
-//	public Piece[] getPieces(){
-//		return pieces;
-//	}
-	
-//	public void setPieces(Piece[] pieces){
-//		this.pieces = pieces;
-//	}
+	public boolean getPieceTaken(){
+		return pieceTaken;
+	}
 }

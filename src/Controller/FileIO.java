@@ -258,15 +258,17 @@ public class FileIO {
 	private String movePiece(String line){
 		String movement = "[" + line + "] ";
 		String startSpace = fileRankConcat(line.charAt(0), line.charAt(1));
-		String finalSpace = fileRankConcat(line.charAt(3), line.charAt(4));
-		if(line.length() == 6){
-			movement += "Piece from " + startSpace + " took piece at " + finalSpace;
-		}
-		else{
-			movement += "Piece from " + startSpace + " moved to " + finalSpace;
-		}
+		String finalSpace = fileRankConcat(line.charAt(3), line.charAt(4));		
 		if(!board.attemptMove(startSpace, finalSpace)){
 			movement = "ERROR: Couldn't move piece from " + startSpace + " to " + finalSpace;
+		}
+		else{
+			if(board.getPieceTaken()){
+				movement += "Piece from " + startSpace + " took piece at " + finalSpace;
+			}
+			else{
+				movement += "Piece from " + startSpace + " moved to " + finalSpace;
+			}
 		}
 		board.drawBoard();
 		return movement;
