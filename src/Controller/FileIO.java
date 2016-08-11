@@ -53,7 +53,6 @@ public class FileIO {
 		case 'P':
 			piece = new Pawn(pieceChar, "NoColor");
 			break;
-	
 		}
 		
 		boolean keepRunning = true;
@@ -69,6 +68,8 @@ public class FileIO {
 //					squares[i].setPieceChar();					
 				}
 				squares[i].setOccupied(true);
+				piece.setCurrentBoardLocation(i);
+				piece.setPossibleMoves();
 				squares[i].setPiece(piece);
 //				pieces[pieceCounter] = piece;
 //				pieceCounter++;
@@ -76,6 +77,7 @@ public class FileIO {
 				keepRunning = false;
 			}
 		}
+		board.setSquares(squares);
 	}
 	
 	public Board getBoard(){
@@ -128,7 +130,7 @@ public class FileIO {
 				p = Pattern.compile(moveRegex);
 				m = p.matcher(line);
 				if(m.matches() && regexMatch == false){
-//					board.drawBoard();
+					board.drawBoard();
 					line = m.group(1);
 //					actions.add(movePiece(line));
 					System.out.println(movePiece(line));
@@ -143,7 +145,7 @@ public class FileIO {
 		catch(IOException ex){
 			System.out.println(ex);
 		}
-//		board.drawBoard();
+		board.drawBoard();
 	}
 	
 	private String placePiece(String line){
@@ -270,7 +272,7 @@ public class FileIO {
 				movement += "Piece from " + startSpace + " moved to " + finalSpace;
 			}
 		}
-		board.drawBoard();
+//		board.drawBoard();
 		return movement;
 	}
 	

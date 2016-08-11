@@ -1,10 +1,17 @@
 package Model;
 
+import java.util.ArrayList;
+
+import Controller.CheckMove;
+import Controller.TurnHandler;
+
 public class Board {
 
 	private final int boardSize = 64;
 	private Square[] squares = new Square[boardSize];
 	private boolean pieceTaken = false;
+	private CheckMove checkMove;
+	private TurnHandler turnHandle = new TurnHandler();
 //	private Piece [] pieces = new Piece[32];
 	
 	public Board(){		
@@ -12,22 +19,31 @@ public class Board {
 //		populatePieces();
 	}
 	
-//	public void populatePieces(){
-//		for(int i = 0; i < pieces.length; i++){
-//			pieces[i] = new Piece('-', "NoColor");
-//		}
-//	}
-	
 	public boolean attemptMove(String startSpace, String endSpace){
 		boolean successfulMove = false;
+		ArrayList<String> moves;
 		for(int i = 0; i < squares.length && !successfulMove; i++){
 			if(squares[i].getFileRank().equals(startSpace)){
-				if(squares[i].getPiece().checkMove(startSpace, endSpace, squares)){
-//					Move a Piece
-//					Swap Turns
-					squares[i] = movePiece(squares[i], endSpace);
-					successfulMove = true;					
-				}
+				if(turnHandle.getColor().equals(squares[i].getPiece().getColor())){
+					checkMove = new CheckMove(squares);
+					checkMove.checkPossibleMoves(squares[i].getPiece());
+					moves = checkMove.getPossibleSquares();
+					for(int j = 0; j < moves.size(); j++){
+						if(moves.get(j).equals(endSpace)){
+//							Move a Piece
+//							Swap Turns
+							squares[i] = movePiece(squares[i], endSpace);
+							turnHandle.swapColor();
+							if(checkMove.isCheck('k', turnHandle.getColor())){
+								System.out.println(turnHandle.getColor() + " King is in check!");
+							}
+							else{
+								System.out.println(turnHandle.getColor() + " King is NOT in check!");
+							}
+							successfulMove = true;	
+						}
+					}	
+				}			
 			}
 		}
 		return successfulMove;
@@ -41,10 +57,11 @@ public class Board {
 				squares[i].setPiece(startSquare.getPiece());
 				squares[i].setOccupied(true);
 				squares[i].getPiece().setHasMoved(true);
-				squares[i].getPiece().clearPossibleMoves();
+				squares[i].getPiece().setCurrentBoardLocation(i);
+				squares[i].getPiece().setPossibleMoves();
+				checkMove.clearArrays();
 				startSquare.setPiece(emptyPiece);
-				startSquare.setOccupied(false);
-				
+				startSquare.setOccupied(false);				
 			}
 		}
 		return startSquare;
@@ -81,6 +98,10 @@ public class Board {
 	
 	public Square[] getSquares(){
 		return squares;
+	}
+	
+	public void setSquares(Square[] squares){
+		this.squares = squares;
 	}
 	
 	public boolean getPieceTaken(){
