@@ -16,7 +16,19 @@ public class Piece {
 	protected final int DIAGONAL_MOVE2 = 9;
 	protected boolean canJump = false;
 	protected boolean hasSpecialAttack = false;
+	protected boolean canMoveDiagonal = false;
+	protected boolean canMoveStraight = false;
+	
 //	Black are lower case, White are upper case
+	
+	public boolean getMoveDiagonal(){
+		return canMoveDiagonal;
+	}
+	
+	public boolean getMoveStraight(){
+		return canMoveStraight;
+	}
+	
 	public boolean getCanJump(){
 		return canJump;
 	}

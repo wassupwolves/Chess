@@ -6,6 +6,8 @@ public class King extends Piece{
 	
 	public King(char pieceSymbol, String pieceColor){
 		super(pieceSymbol, pieceColor);
+		canMoveDiagonal = true;
+		canMoveStraight = true;
 	}
 	
 	public void setPossibleMoves(){

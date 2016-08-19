@@ -6,6 +6,8 @@ public class Queen extends Piece{
 	
 	public Queen(char pieceSymbol, String pieceColor){
 		super(pieceSymbol, pieceColor);
+		canMoveDiagonal = true;
+		canMoveStraight = true;
 	}
 	
 	public void setPossibleMoves(){
