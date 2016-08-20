@@ -31,7 +31,7 @@ public class Board {
 				if(turnHandle.getColor().equals(squares[i].getPiece().getColor())){
 					checkMove = new CheckMove(squares, turnHandle);
 					checkMove.checkPossibleMoves(squares[i].getPiece());
-					moves = checkMove.getPossibleSquares();
+					moves = checkMove.getFinalPossibleSquares();
 					for(int j = 0; j < moves.size(); j++){
 						if(moves.get(j).equals(endSpace)){
 //							Move a Piece

@@ -38,11 +38,7 @@ h7 h5
 a1 a3
 h8 h6
 a3 d3
-b8 a6
+a7 a6
 d3 d7
 g8 f6
-b2 b3
-f6 g4
-c1 a3
-g4 f2
-b1 h3
+e8 d7

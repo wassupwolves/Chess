@@ -11,6 +11,7 @@ public class CheckMove {
 	private ArrayList<Integer> possibleMovesOnBoard = new ArrayList<Integer>();
 	private ArrayList<Integer> possibleMovesOnBoardSecondary = new ArrayList<Integer>();
 	private ArrayList<String> possibleSquares = new ArrayList<String>();
+	private ArrayList<String> finalPossibleSquares = new ArrayList<String>();
 	private ArrayList<Integer> possibleCheckMoves = new ArrayList<Integer>();
 	private ArrayList<Integer> possibleCheckMovesSecondary = new ArrayList<Integer>();
 	//	private ArrayList<Integer> finalPossibleMoves = new ArrayList<Integer>(); 
@@ -74,8 +75,8 @@ public class CheckMove {
 					piece.setPossibleMoves();
 //					checkPossibleMoves(piece);
 					checkCheckPossibleMoves(piece);
-					for(int i = 0; i < possibleCheckMoves.size(); i++){
-						if(startPosition == (possibleCheckMoves.get(i))){							
+					for(int i = 0; i < possibleCheckMovesSecondary.size(); i++){
+						if(startPosition == (possibleCheckMovesSecondary.get(i))){							
 							inCheck = true;
 						}
 					}
@@ -114,8 +115,8 @@ public class CheckMove {
 					piece.setPossibleMoves();
 //					checkPossibleMoves(piece);
 					checkCheckPossibleMoves(piece);
-					for(int i = 0; i < possibleCheckMoves.size(); i++){
-						if(startPosition == (possibleCheckMoves.get(i))){							
+					for(int i = 0; i < possibleCheckMovesSecondary.size(); i++){
+						if(startPosition == (possibleCheckMovesSecondary.get(i))){							
 							inCheck = true;
 						}
 					}
@@ -155,8 +156,8 @@ public class CheckMove {
 					piece.setPossibleMoves();
 //					checkPossibleMoves(piece);
 					checkCheckPossibleMoves(piece);
-					for(int i = 0; i < possibleCheckMoves.size(); i++){
-						if(startPosition == (possibleCheckMoves.get(i))){							
+					for(int i = 0; i < possibleCheckMovesSecondary.size(); i++){
+						if(startPosition == (possibleCheckMovesSecondary.get(i))){							
 							inCheck = true;
 						}
 					}
@@ -196,8 +197,8 @@ public class CheckMove {
 					piece.setPossibleMoves();
 //					checkPossibleMoves(piece);
 					checkCheckPossibleMoves(piece);
-					for(int i = 0; i < possibleCheckMoves.size(); i++){
-						if(startPosition == (possibleCheckMoves.get(i))){							
+					for(int i = 0; i < possibleCheckMovesSecondary.size(); i++){
+						if(startPosition == (possibleCheckMovesSecondary.get(i))){							
 							inCheck = true;
 						}
 					}
@@ -220,7 +221,6 @@ public class CheckMove {
 	}
 
 	private boolean checkHorizontalOffset(int startPosition, int offset){
-//		possibleSquares.clear();
 		boolean inCheck = false;
 		boolean keepRunning = true;
 		double sameRowCheck = Math.floor(startPosition / MOD_VALUE);
@@ -238,8 +238,8 @@ public class CheckMove {
 					piece.setPossibleMoves();
 //					checkPossibleMoves(piece);
 					checkCheckPossibleMoves(piece);
-					for(int i = 0; i < possibleCheckMoves.size(); i++){
-						if(startPosition == (possibleCheckMoves.get(i))){							
+					for(int i = 0; i < possibleCheckMovesSecondary.size(); i++){
+						if(startPosition == (possibleCheckMovesSecondary.get(i))){							
 							inCheck = true;
 						}
 					}
@@ -274,7 +274,6 @@ public class CheckMove {
 		else if(checkJumpCheck(piecePosition)){
 			check = true;
 		}
-//		possibleSquares.clear();
 		return check;
 	}
 
@@ -373,22 +372,22 @@ public class CheckMove {
 					checkSpecialAttack(currentPosition, possibleMovesOnBoard.get(i), piece);
 				}
 				else if(hasPathToSquare(currentPosition, possibleMovesOnBoard.get(i), piece)){
-					//						finalPossibleMoves.add(i);
 					possibleCheckMoves.add(possibleMovesOnBoard.get(i));									
 				}
 			}
 		}		
 	}
 	
+//	I needed this secondary methods because when checking the opponents pieces I didnt need to run a checkCheck on those
 	private void removeImpossibleMovesSecondary(Piece piece){
 		int currentPosition = piece.getCurrentBoardLocation();
 		for(int i = 0; i < possibleMovesOnBoardSecondary.size(); i++){
 			if(!piece.getColor().equals(squares[possibleMovesOnBoardSecondary.get(i)].getPiece().getColor())){
 				if(piece.getCanJump()){
-					checkJumpMoves(currentPosition, possibleMovesOnBoardSecondary.get(i));
+					checkJumpMovesSecondary(currentPosition, possibleMovesOnBoardSecondary.get(i));
 				}
 				else if(piece.hasSpecialAttack()){
-					checkSpecialAttack(currentPosition, possibleMovesOnBoardSecondary.get(i), piece);
+					checkSpecialAttackSecondary(currentPosition, possibleMovesOnBoardSecondary.get(i), piece);
 				}
 				else if(hasPathToSquare(currentPosition, possibleMovesOnBoardSecondary.get(i), piece)){
 					//						finalPossibleMoves.add(i);
@@ -414,58 +413,34 @@ public class CheckMove {
 			tempSquares[initialStartLocation].setPiece(emptyPiece);
 			tempSquares[initialEndLocation].setOccupied(true);
 			tempSquares[initialEndLocation].setPiece(initialStartPiece);
+			initialStartPiece.setCurrentBoardLocation(initialEndLocation);
 			if(!isCheck('k', piece.getColor())){
 				possibleSquares.add(squares[possibleCheckMoves.get(i)].getFileRank());
 			}
 			tempSquares[initialStartLocation].setOccupied(true);
 			tempSquares[initialStartLocation].setPiece(initialStartPiece);
+			initialStartPiece.setCurrentBoardLocation(initialStartLocation);
+			if(initialEndPiece.equals(emptyPiece)){
+				tempSquares[initialEndLocation].setOccupied(false);
+			}			
 			tempSquares[initialEndLocation].setPiece(initialEndPiece);	
 		}
-//		System.out.println("hello");
-//		if(isCheck('k', piece.getColor())){
-//			System.out.println("Own King in Check");
-//		}
-//		else{
-//			//Remove piece
-//			Piece emptyPiece = new Piece('-', "NoColor");
-//			if(piece.getCharacterPiece() != 'k' || piece.getCharacterPiece() != 'K'){
-//				squares[piece.getCurrentBoardLocation()].setOccupied(false);
-//				squares[piece.getCurrentBoardLocation()].setPiece(emptyPiece);
-//			}		
-//			if(isCheck('k', piece.getColor())){
-//				squares[piece.getCurrentBoardLocation()].setOccupied(true);
-//				squares[piece.getCurrentBoardLocation()].setPiece(piece);			
-//				hasPathToSquare(kingPosition, piece.getCurrentBoardLocation(), piece);
-//				for(int i = 0; i < MOD_VALUE; i++){
-//					for(int j = 0; j < possibleMovesOnBoard.size(); j++){
-//						if(possibleMovesOnBoard.get(j) == piece.getCurrentBoardLocation() + (checkOffset * i)){
-//							possibleSquares.add(squares[possibleMovesOnBoard.get(j)].getFileRank());
-//							//							finalPossibleMoves.add(possibleMovesOnBoard.get(j));
-//						}
-//						if(possibleMovesOnBoard.get(j) == piece.getCurrentBoardLocation() - (checkOffset * i)){
-//							possibleSquares.add(squares[possibleMovesOnBoard.get(j)].getFileRank());
-//							//							finalPossibleMoves.add(possibleMovesOnBoard.get(j));
-//						}
-//					}
-//				}
-//			}
-//			else{
-//				squares[piece.getCurrentBoardLocation()].setOccupied(true);
-//				squares[piece.getCurrentBoardLocation()].setPiece(piece);
-//				for(int i = 0; i < possibleMovesOnBoard.size(); i++){
-//					possibleSquares.add(squares[possibleMovesOnBoard.get(i)].getFileRank());
-//					//					finalPossibleMoves.add(possibleMovesOnBoard.get(i));
-//				}
-//
-//			}
-//		}
 	}
-
-	//	private void fillFinalPossibleSquares(){
-	//		for(int i = 0; i < finalPossibleMoves.size(); i++){
-	//			possibleSquares.add(squares[finalPossibleMoves.get(i)].getFileRank());
-	//		}
-	//	}
+	
+	private void checkJumpMovesSecondary(int startPosition, int endPosition){
+		if(endPosition - 6 == startPosition || endPosition - 15 == startPosition || endPosition + 10 == startPosition || endPosition + 17 == startPosition){
+			if(endPosition % MOD_VALUE < startPosition % MOD_VALUE){
+				possibleCheckMovesSecondary.add(endPosition);
+				//				finalPossibleMoves.add(endPosition);
+			}
+		}
+		else if(endPosition + 6 == startPosition || endPosition + 15 == startPosition || endPosition - 10 == startPosition || endPosition - 17 == startPosition){
+			if(endPosition % MOD_VALUE > startPosition % MOD_VALUE){
+				possibleCheckMovesSecondary.add(endPosition);
+				//				finalPossibleMoves.add(endPosition);
+			}
+		}		
+	}
 
 	private void checkJumpMoves(int startPosition, int endPosition){
 		if(endPosition - 6 == startPosition || endPosition - 15 == startPosition || endPosition + 10 == startPosition || endPosition + 17 == startPosition){
@@ -480,6 +455,37 @@ public class CheckMove {
 				//				finalPossibleMoves.add(endPosition);
 			}
 		}		
+	}
+	
+	private void checkSpecialAttackSecondary(int startPosition, int endPosition, Piece piece){
+		if(piece.getColor().equals("White")){
+			if(endPosition + 16 == startPosition && !squares[endPosition].isOccupied()){
+				possibleCheckMovesSecondary.add(endPosition);
+			}
+			else if(endPosition + 8 == startPosition && !squares[endPosition].isOccupied()){
+				possibleCheckMovesSecondary.add(endPosition);
+			}
+			else if(endPosition + 7 == startPosition && !piece.getColor().equals(squares[endPosition].getPiece().getColor())){
+				possibleCheckMovesSecondary.add(endPosition);
+			}
+			else if(endPosition + 9 == startPosition && !piece.getColor().equals(squares[endPosition].getPiece().getColor())){
+				possibleCheckMovesSecondary.add(endPosition);
+			}
+		}
+		else if(piece.getColor().equals("Black")){
+			if(endPosition - 16 == startPosition && !squares[endPosition].isOccupied()){
+				possibleCheckMovesSecondary.add(endPosition);
+			}
+			else if(endPosition - 8 == startPosition && !squares[endPosition].isOccupied()){
+				possibleCheckMovesSecondary.add(endPosition);
+			}
+			else if(endPosition - 7 == startPosition && !piece.getColor().equals(squares[endPosition].getPiece().getColor())){
+				possibleCheckMovesSecondary.add(endPosition);
+			}
+			else if(endPosition - 9 == startPosition && !piece.getColor().equals(squares[endPosition].getPiece().getColor())){
+				possibleCheckMovesSecondary.add(endPosition);
+			}
+		}
 	}
 
 	private void checkSpecialAttack(int startPosition, int endPosition, Piece piece){
@@ -579,16 +585,26 @@ public class CheckMove {
 	public void checkPossibleMoves(Piece piece){
 		possibleMovesOnBoard.clear();
 		possibleCheckMoves.clear();
-//		possibleSquares.clear();
+		possibleSquares.clear();
 		checkOffBoard(piece);
 		removeImpossibleMoves(piece);
 		if(handler.getColor().equals(piece.getColor())){
 			removeCheckViolations(piece);
 		}	
+		fillFinalPossibleSquareArray();
+	}
+	
+//	This is to remove all duplicates in the final fileRank array
+	private void fillFinalPossibleSquareArray(){
+		for(String fileRank : possibleSquares){
+			if(!finalPossibleSquares.contains(fileRank)){
+				finalPossibleSquares.add(fileRank);
+			}
+		}
 	}
 
-	public ArrayList<String> getPossibleSquares(){
-		return possibleSquares;
+	public ArrayList<String> getFinalPossibleSquares(){
+		return finalPossibleSquares;
 	}
 
 }
