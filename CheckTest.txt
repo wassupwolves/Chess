@@ -1,10 +1,11 @@
 Klh1
-Kda8
+Kda7
 Rlb1
-Rdh8
+Rlb2
+Rlh2
+Qld1
 
 b1 a1
-h8 h7
-a1 a2
+a7 b7
 
 

@@ -41,12 +41,15 @@ public class Board {
 							if(checkMove.isCheck('k', turnHandle.getColor())){
 								System.out.println(turnHandle.getColor() + " King is in check!");
 							}
-							else{
-								System.out.println(turnHandle.getColor() + " King is NOT in check!");
-							}
+//							else{
+//								System.out.println(turnHandle.getColor() + " King is NOT in check!");
+//							}
 							successfulMove = true;	
 						}
-					}	
+					}
+					if(checkMove.getCheckMate()){
+						System.out.println(turnHandle.getColor() + " King is in CHECKMATE!");
+					}
 				}			
 			}
 		}	
