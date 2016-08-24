@@ -25,6 +25,10 @@ public class CheckMove {
 	private Square[] tempSquares;
 	private int checkOffset;
 	private TurnHandler handler;
+	
+	public Square[] getSquares(){
+		return squares;
+	}
 
 	public CheckMove(Square[] squares, TurnHandler handler){
 		this.squares = squares;
@@ -345,6 +349,14 @@ public class CheckMove {
 		else if(offset == 1 && Math.floor(endPosition / MOD_VALUE) != Math.floor(startPosition / MOD_VALUE)){
 			pathClear = false;
 		}
+		else if(squares[startPosition].getPiece().getCharacterPiece() == 'k' || squares[startPosition].getPiece().getCharacterPiece() == 'K'){
+			if(startPosition % MOD_VALUE == 0 && endPosition % MOD_VALUE == 7){
+				pathClear = false;
+			}
+			else if(startPosition % MOD_VALUE == 7 && endPosition % MOD_VALUE == 0){
+				pathClear = false;
+			}
+		}
 		int endPositionHolder = endPosition + offset;
 		while(endPositionHolder != startPosition && pathClear){
 			if(endPositionHolder >= BOARD_MIN && endPositionHolder <= BOARD_MAX){
@@ -447,11 +459,11 @@ public class CheckMove {
 			tempSquares[initialEndLocation].setOccupied(true);
 			tempSquares[initialEndLocation].setPiece(initialStartPiece);		
 			if(isCheck('k', piece.getColor())){
-				possibleCheckMate.add(true);
-				keepGoing = false;
+				possibleCheckMate.add(true);				
 			}
 			else{
-				possibleCheckMate.add(false);
+				possibleCheckMate.add(false);	
+				keepGoing = false;
 			}
 			tempSquares[initialStartLocation].setOccupied(true);
 			tempSquares[initialStartLocation].setPiece(initialStartPiece);
@@ -466,8 +478,24 @@ public class CheckMove {
 	private void checkCheckMate(Piece piece){
 		for(int i = 0; i < squares.length; i++){
 			if(squares[i].getPiece().getColor().equals(piece.getColor())){
-				checkPossibleMovesSecondary(squares[i].getPiece());
-				removeCheckViolationsSecondary(squares[i].getPiece());
+//				checkPossibleMovesSecondary(squares[i].getPiece());
+//				removeCheckViolationsSecondary(squares[i].getPiece());
+				possibleMovesOnBoard.clear();
+				possibleCheckMoves.clear();
+				possibleSquares.clear();
+				finalPossibleSquares.clear();
+				checkOffBoard(squares[i].getPiece());
+				removeImpossibleMoves(squares[i].getPiece());
+				if(handler.getColor().equals(squares[i].getPiece().getColor())){
+					removeCheckViolations(squares[i].getPiece());
+				}	
+				fillFinalPossibleSquareArray();
+				if(finalPossibleSquares.size() == 0){			
+					possibleCheckMate.add(true);
+				}
+				else{
+					possibleCheckMate.add(false);
+				}
 			}
 		}
 	}
@@ -541,10 +569,10 @@ public class CheckMove {
 			else if(endPosition + 8 == startPosition && !squares[endPosition].isOccupied()){
 				possibleCheckMoves.add(endPosition);
 			}
-			else if(endPosition + 7 == startPosition && squares[endPosition].getPiece().getColor().equals("Black")){
+			else if(endPosition + 7 == startPosition && squares[endPosition].getPiece().getColor().equals("Black") && endPosition % MOD_VALUE > startPosition % MOD_VALUE){
 				possibleCheckMoves.add(endPosition);
 			}
-			else if(endPosition + 9 == startPosition && squares[endPosition].getPiece().getColor().equals("Black")){
+			else if(endPosition + 9 == startPosition && squares[endPosition].getPiece().getColor().equals("Black") && endPosition % MOD_VALUE < startPosition % MOD_VALUE){
 				possibleCheckMoves.add(endPosition);
 			}
 		}
@@ -555,10 +583,10 @@ public class CheckMove {
 			else if(endPosition - 8 == startPosition && !squares[endPosition].isOccupied()){
 				possibleCheckMoves.add(endPosition);
 			}
-			else if(endPosition - 7 == startPosition && squares[endPosition].getPiece().getColor().equals("White")){
+			else if(endPosition - 7 == startPosition && squares[endPosition].getPiece().getColor().equals("White") && endPosition % MOD_VALUE < startPosition % MOD_VALUE){
 				possibleCheckMoves.add(endPosition);
 			}
-			else if(endPosition - 9 == startPosition && squares[endPosition].getPiece().getColor().equals("White")){
+			else if(endPosition - 9 == startPosition && squares[endPosition].getPiece().getColor().equals("White") && endPosition % MOD_VALUE > startPosition % MOD_VALUE){
 				possibleCheckMoves.add(endPosition);
 			}
 		}
@@ -621,7 +649,7 @@ public class CheckMove {
 	
 	public void checkPossibleMovesSecondary(Piece piece){
 		possibleMovesOnBoardSecondary.clear();
-		possibleCheckMovesSecondary.clear();
+		possibleCheckMovesSecondary.clear();		
 //		possibleSquares.clear();
 		checkOffBoardSecondary(piece);
 		removeImpossibleMovesSecondary(piece);
@@ -631,6 +659,7 @@ public class CheckMove {
 		possibleMovesOnBoard.clear();
 		possibleCheckMoves.clear();
 		possibleSquares.clear();
+		finalPossibleSquares.clear();
 		possibleCheckMate.clear();
 		checkOffBoard(piece);
 		removeImpossibleMoves(piece);

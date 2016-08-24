@@ -15,12 +15,21 @@ public class Board {
 	private TurnHandler turnHandle = new TurnHandler();
 //	private Piece [] pieces = new Piece[32];
 	
+	public CheckMove getCheckMove(){
+		return checkMove;
+	}
+	
+	public TurnHandler getTurnHandler(){
+		return turnHandle;
+	}
+	
 	public Board(Square[] tempSquares){
 		populateTempSquares(tempSquares);
 	}
 	
 	public Board(){		
 		populateSquares();
+		checkMove = new CheckMove(squares, turnHandle);
 	}
 	
 	public boolean attemptMove(String startSpace, String endSpace){
@@ -29,30 +38,25 @@ public class Board {
 		for(int i = 0; i < squares.length && !successfulMove; i++){
 			if(squares[i].getFileRank().equals(startSpace)){
 				if(turnHandle.getColor().equals(squares[i].getPiece().getColor())){
-					checkMove = new CheckMove(squares, turnHandle);
-					checkMove.checkPossibleMoves(squares[i].getPiece());
+//					checkMove = new CheckMove(squares, turnHandle);
+//					checkMove.checkPossibleMoves(squares[i].getPiece());
 					moves = checkMove.getFinalPossibleSquares();
 					for(int j = 0; j < moves.size(); j++){
 						if(moves.get(j).equals(endSpace)){
-//							Move a Piece
-//							Swap Turns
 							squares[i] = movePiece(squares[i], endSpace);
 							turnHandle.swapColor();
 							if(checkMove.isCheck('k', turnHandle.getColor())){
 								System.out.println(turnHandle.getColor() + " King is in check!");
 							}
-//							else{
-//								System.out.println(turnHandle.getColor() + " King is NOT in check!");
-//							}
 							successfulMove = true;	
 						}
-					}
-					if(checkMove.getCheckMate()){
-						System.out.println(turnHandle.getColor() + " King is in CHECKMATE!");
-					}
+					}					
 				}			
 			}
 		}	
+		if(checkMove.getCheckMate()){
+			System.out.println(turnHandle.getColor() + " King is in CHECKMATE!");
+		}
 		return successfulMove;
 	}
 	
@@ -61,6 +65,18 @@ public class Board {
 			if(squares[i].getFileRank().equals(endSpace)){
 				pieceTaken = squares[i].isOccupied();
 				Piece emptyPiece = new Piece('-', "NoColor");
+				if(startSquare.getPiece().hasSpecialAttack){
+					if(startSquare.getPiece().getColor().equals("White")){
+						if(endSpace.contains("8")){
+							startSquare.setPiece(new Queen('Q', "White"));
+						}
+					}
+					else if(startSquare.getPiece().getColor().equals("Black")){
+						if(endSpace.contains("1")){
+							startSquare.setPiece(new Queen('q', "Black"));
+						}
+					}
+				}
 				squares[i].setPiece(startSquare.getPiece());
 				squares[i].setOccupied(true);
 				squares[i].getPiece().setHasMoved(true);

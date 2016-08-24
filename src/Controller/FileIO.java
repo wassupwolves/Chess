@@ -30,6 +30,13 @@ public class FileIO {
 	private Board board;
 //	private int pieceCounter = 0;
 	
+	public void playGame(){
+		UserInteraction userInput = new UserInteraction(board.getTurnHandler(), board.getCheckMove());
+		while(!userInput.getCheckMate()){
+			userInput.promptStartSpace(board);
+		}
+	}
+	
 	private void assignSquarePieces(char pieceChar, char color, String fileRank){
 		Square[] squares = board.getSquares();
 //		Piece[] pieces = board.getPieces();

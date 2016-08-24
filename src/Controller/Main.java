@@ -11,6 +11,7 @@ public class Main {
 	public static void main(String[] args) {
 		FileIO fileIO = new FileIO(args[0]);
 		fileIO.readFile();
+		fileIO.playGame();
 //		Iterator<String> iterator = fileIO.getActions().iterator();
 //		while(iterator.hasNext()){
 //			fileIO.getBoard().drawBoard();
